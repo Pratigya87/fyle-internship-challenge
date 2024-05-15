@@ -1,0 +1,34 @@
+<div style="text-align: center; padding-bottom: 20px;">
+    <div style="display: inline-block; text-align: center;">
+        <div style="text-align: left; margin: 10px;">
+            Page Size: 
+            <select name="pageSize" id="pageSize" (change)="setPageSize($event)">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="1000">1000</option>
+            </select>
+        </div>
+        <ul class="pagination">
+            <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }" (click)="setPage(currentPage - 1)">
+                <a class="page-link">
+                    < </a>
+            </li>
+            <li *ngFor="let page of pages" class="page-item" [ngClass]="{ active: currentPage === page }"
+                (click)="setPage(page)">
+                <a class="page-link">{{ page }}</a>
+            </li>
+            <li class="page-item" [ngClass]="{ disabled: currentPage === totalPages }"
+                (click)="setPage(currentPage + 1)">
+                <a class="page-link">
+                    >
+                </a>
+            </li>
+        </ul>
+        <br />
+        <button class="older-btn" (click)="setPage(1)">Older</button>
+        <button class="newer-btn" (click)="setPage(totalPages)">Newer</button>
+    </div>
+
+</div>
