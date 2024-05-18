@@ -10,6 +10,7 @@ export class AppComponent implements OnInit {
   userInfo: any;
   userRepoList: any[] = [];
   githubUsername: string = 'johnpapa';
+  title = "fyle-frontend-challenge"
   totalRecords = 0;
   pageSize = 10;
   currentPage = 1;
