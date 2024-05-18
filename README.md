@@ -41,3 +41,13 @@ Run `ng serve` for a dev server. Navigate to http://localhost:4200/. The app wil
 
 Visit the [Angular Documentation](https://angular.io/guide/styleguide) to learn more.
 Styling is to be strictly done with [Tailwind](https://tailwindcss.com/docs/installation).
+
+
+## How to run the project
+
+1. Clone the project with this command : git clone https://github.com/Pratigya87/fyle-internship-challenge.git
+2. Run this command to install all the libraries : npm install
+3. Run this command to start the project : npm start
+4. Run this command to run the test cases : npm test
+5. Run this commmand to see the code coverage of the test cases in cmd or terminal : ng test --no-watch --code-coverage
+6. To see the deployed project please use this URL : https://github-clone-pp.000webhostapp.com/index.html
