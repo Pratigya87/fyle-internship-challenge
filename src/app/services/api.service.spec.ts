@@ -1,82 +1,59 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatCardModule } from '@angular/material/card';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ApiService } from '../services/api.service';
-import { UserCardComponent } from '../user-card/user-card.component';
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { ApiService } from './api.service';
 
-describe('UserCardComponent', () => {
-  let component: UserCardComponent;
-  let fixture: ComponentFixture<UserCardComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, MatCardModule, HttpClientTestingModule],
-      declarations: [UserCardComponent],
-      providers: [ApiService]
-    }).compileComponents();
-  });
+describe('ApiService', () => {
+  let service: ApiService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserCardComponent);
-    component = fixture.componentInstance;
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [ApiService]
+    });
+    service = TestBed.inject(ApiService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  afterEach(() => {
+    httpMock.verify();
   });
 
-  it('should render user details correctly', () => {
-    const mockUser = {
-      name: 'Test User',
-      description: 'This is a test user',
-      topics: ['angular', 'testing'],
-      html_url: 'https://github.com/testuser'
-    };
-    component.user = mockUser;
-    fixture.detectChanges();
-
-    const cardTitle = fixture.debugElement.query(By.css('mat-card-title')).nativeElement;
-    const cardSubtitle = fixture.debugElement.query(By.css('mat-card-subtitle')).nativeElement;
-    const topics = fixture.debugElement.queryAll(By.css('.topic'));
-
-    expect(cardTitle.textContent).toContain('Test User');
-    expect(cardSubtitle.textContent).toContain('This is a test user');
-    expect(topics.length).toBe(2);
-    expect(topics[0].nativeElement.textContent).toContain('angular');
-    expect(topics[1].nativeElement.textContent).toContain('testing');
+  it('should be created', () => {
+    expect(service).toBeTruthy();
   });
 
-  it('should call openGitRepo when mat-card is clicked', () => {
-    spyOn(component, 'openGitRepo');
+  it('should fetch user data from GitHub API', () => {
+    const dummyUser = { login: 'Pratigya87', id: 1 };
+    service.getUser('Pratigya87').subscribe(user => {
+      expect(user).toEqual(dummyUser);
+    });
 
-    component.user = {
-      name: 'Test User',
-      description: 'This is a test user',
-      topics: ['angular', 'testing'],
-      html_url: 'https://github.com/testuser'
-    };
-    fixture.detectChanges();
-
-    const card = fixture.debugElement.query(By.css('mat-card'));
-    card.triggerEventHandler('click', null);
-
-    expect(component.openGitRepo).toHaveBeenCalled();
+    const req = httpMock.expectOne(`https://api.github.com/users/Pratigya87`);
+    expect(req.request.method).toBe('GET');
+    req.flush(dummyUser);
   });
 
-  it('openGitRepo should open a new window with the user\'s GitHub URL', () => {
-    const mockUser = {
-      name: 'Test User',
-      description: 'This is a test user',
-      topics: ['angular', 'testing'],
-      html_url: 'https://github.com/testuser'
-    };
-    component.user = mockUser;
-    spyOn(window, 'open');
+  it('should fetch user repositories from GitHub API with pagination', () => {
+    const dummyRepos = [{ name: 'fyle-internship-challenge' }];
+    service.getUserRepo('Pratigya87', 10, 1).subscribe(repos => {
+      expect(repos).toEqual(dummyRepos);
+    });
 
-    component.openGitRepo();
-
-    expect(window.open).toHaveBeenCalledWith('https://github.com/testuser', '_blank');
+    const req = httpMock.expectOne(`https://api.github.com/users/Pratigya87/repos?page=1&per_page=10`);
+    expect(req.request.method).toBe('GET');
+    req.flush(dummyRepos);
   });
+
+  it('should fetch user repositories from GitHub API without pagination', () => {
+    const dummyRepos = [{ name: 'fyle-internship-challenge' }];
+    service.getUserRepo('Pratigya87').subscribe(repos => {
+      expect(repos).toEqual(dummyRepos);
+    });
+
+    const req = httpMock.expectOne(`https://api.github.com/users/Pratigya87/repos?page=0&per_page=10`);
+    expect(req.request.method).toBe('GET');
+    req.flush(dummyRepos);
+  });
+
 });
