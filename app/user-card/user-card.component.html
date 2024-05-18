@@ -1,0 +1,11 @@
+<mat-card *ngIf="user" class="mat-elevation-z2 repo" (click)="openGitRepo()">
+  <mat-card-header>
+    <mat-card-title>{{user.name}}</mat-card-title>
+    <mat-card-subtitle>{{user.description}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-footer style="margin: 10px;">
+    <span *ngFor="let topic of user.topics" class="topic">
+      {{topic}}
+    </span>
+  </mat-card-footer>
+</mat-card>
