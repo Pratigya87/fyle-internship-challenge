@@ -1,0 +1,44 @@
+<div>
+  <div style="font-weight: bold; text-align: center;">
+    <span>
+    {{title}} app is running!
+  </span>
+  </div>
+  <div class="Search">
+    <form>
+      <input type="text" name="username" [(ngModel)]="githubUsername" placeholder="search user name" />
+      <button type="submit" (click)="onSearch()">Search</button>
+    </form>
+  </div>
+  <div *ngIf="userInfo">
+    <div class="userProfile">
+      <div class="user-img">
+        <img src="{{userInfo.avatar_url}}" alt="img" />
+      </div>
+      <div class="user-info">
+        <h1>{{userInfo.name}}</h1>
+        <h5>{{userInfo.bio}}</h5>
+        <h5 style="display: flex; align-content: center;"><mat-icon style="font-size: medium;" aria-hidden="false"
+            aria-label="Example home icon" fontIcon="location_on"></mat-icon>{{userInfo.location}}</h5>
+        <h5><a target="_blank"
+            href="https://twitter.com/{{userInfo.twitter_username}}">https://twitter.com/{{userInfo.twitter_username}}</a>
+        </h5>
+      </div>
+    </div>
+    <a target="_blank" href="{{userInfo.html_url}}">
+      <h5 style="margin: 10px; display: flex; align-content: center;">
+        <mat-icon style="font-size: medium;">link</mat-icon>
+        {{userInfo.html_url}}
+      </h5>
+    </a>
+  </div>
+  <div class="grid-container">
+    <div class="grid-item" *ngFor="let user of userRepoList">
+      <app-user-card [user]="user"></app-user-card>
+    </div>
+  </div>
+  <div *ngIf="!loading">
+    <app-pagination [totalRecords]="totalRecords" (updateCurrentPageEvent)="setPage($event)"
+      (updatePageSizeEvent)="setPageSize($event)"></app-pagination>
+  </div>
+</div>
